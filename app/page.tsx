@@ -8,6 +8,8 @@ import LanguageChart from '@/components/LanguageChart'
 import ActivityChart from '@/components/ActivityChart'
 import RepoList from '@/components/RepoList'
 import SkeletonCard from '@/components/SkeletonCard'
+import EmptyState from '@/components/EmptyState'
+import Footer from '@/components/Footer'
 import { fetchDashboard } from '@/lib/github'
 import type { DashboardData } from '@/types/github'
 
@@ -31,16 +33,18 @@ export default function HomePage() {
   }
 
   return (
-    <main className="min-h-screen bg-bg text-text px-4 py-12 max-w-5xl mx-auto">
+    <main className="min-h-screen bg-bg text-text px-4 py-12 max-w-5xl mx-auto flex flex-col">
       <header className="mb-10 text-center">
-        <p className="text-accent font-mono text-sm mb-2 tracking-widest uppercase">
+        <p className="text-accent font-mono text-sm mb-3 tracking-widest uppercase">
           // github analytics
         </p>
-        <h1 className="text-4xl sm:text-5xl font-mono font-bold tracking-tight">
+        <h1 className="text-5xl sm:text-6xl font-mono font-bold tracking-tight">
           GitHub<span className="text-accent">_</span>Stats
+          <span className="text-accent cursor-blink ml-1">▊</span>
         </h1>
-        <p className="text-text-muted mt-3 font-mono text-sm">
-          Visualise n&apos;importe quel profil GitHub en quelques secondes.
+        <p className="text-text-muted mt-4 font-mono text-sm max-w-md mx-auto">
+          Visualise n&apos;importe quel profil GitHub en quelques secondes —
+          repos, langages, activité, top stars.
         </p>
       </header>
 
@@ -79,41 +83,17 @@ export default function HomePage() {
           <LanguageChart languages={data.languages} />
           <ActivityChart data={data.monthlyActivity} />
           <RepoList repos={data.topRepos} />
-          <footer className="pt-4 text-center text-xs font-mono text-text-muted">
+          <p className="pt-2 text-center text-xs font-mono text-text-muted">
             <span className="text-accent">$</span> fetched data for{' '}
-            <span className="text-text">@{data.user.login}</span> · powered by GitHub REST API
-          </footer>
-        </div>
-      )}
-
-      {!data && !loading && !error && (
-        <div className="mt-12 text-center text-xs font-mono text-text-muted">
-          <p>
-            <span className="text-accent">$</span> try:{' '}
-            <button
-              onClick={() => handleSearch('torvalds')}
-              className="text-text hover:text-accent underline-offset-2 hover:underline"
-            >
-              torvalds
-            </button>
-            {' · '}
-            <button
-              onClick={() => handleSearch('gaearon')}
-              className="text-text hover:text-accent underline-offset-2 hover:underline"
-            >
-              gaearon
-            </button>
-            {' · '}
-            <button
-              onClick={() => handleSearch('sindresorhus')}
-              className="text-text hover:text-accent underline-offset-2 hover:underline"
-            >
-              sindresorhus
-            </button>
+            <span className="text-text">@{data.user.login}</span> · cached 5 min
           </p>
         </div>
       )}
 
+      {!data && !loading && !error && <EmptyState onPick={handleSearch} />}
+
+      <div className="flex-1" />
+      <Footer />
     </main>
   )
 }
